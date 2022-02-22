@@ -7,6 +7,8 @@ class MoviesController < ApplicationController
   end
 
   def index
+    sort_by_name = params[:id]
+    print(sort_by_name)
     @movies = Movie.all
   end
 
