@@ -7,9 +7,13 @@ class MoviesController < ApplicationController
   end
 
   def index
-    sort_by_name = params[:id]
-    print(sort_by_name)
-    @movies = Movie.all
+    @sort = ''
+    if params[:sort]
+      @sort = params[:sort]
+      return @movies = Movie.all.order(@sort)
+    else
+      return @movies = Movie.all
+    end
   end
 
   def new
