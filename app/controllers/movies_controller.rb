@@ -7,26 +7,41 @@ class MoviesController < ApplicationController
   end
 
   def index
-    
-    @all_ratings = Movie.uniq.pluck(:rating)
-    session[:ratings] = params[:ratings] unless params[:ratings].nil?
-    session[:sort] = params[:sort] unless params[:sort].nil?
-
-    if (params[:ratings].nil? && !session[:ratings].nil?) || (params[:sort].nil? && !session[:sort].nil?)
-      redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
-    elsif !params[:ratings].nil? || !params[:sort].nil?
-      if !params[:ratings].nil?
-        array_ratings = params[:ratings].keys
-        return @movies = Movie.where(rating: array_ratings).order(session[:sort])
-      else
-        return @movies = Movie.all.order(session[:sort])
+  
+      @all_ratings = Movie.uniq.pluck(:rating)
+      @sorting = params[:sort]
+      @given_ratings = @all_ratings 
+      
+      if params[:ratings]
+        @given_ratings =  params[:ratings].keys 
       end
-    elsif !session[:ratings].nil? || !session[:sort].nil?
-      redirect_to movies_path("ratings" => session[:ratings], "sort" => session[:sort])
-    else
-      return @movies = Movie.all
-    end
-
+      
+      if @sorting
+        @movies = Movie.where(rating: @given_ratings).order(@sorting)
+      else
+        @movies = Movie.where(rating: @given_ratings)
+      end
+     #part 3
+     if @sorting
+      session[:sort] = params[:sort] 
+     end
+     
+     if params[:ratings]
+      session[:ratings] = params[:ratings]
+     end
+      
+      if (session[:ratings] && !params[:ratings])
+        flash.keep
+        return redirect_to movies_path(sort: params[:sort], ratings: session[:ratings])
+        
+      elsif (!params[:sort] && !params[:ratings]) && (session[:sort] && session[:ratings])
+        flash.keep
+        return redirect_to movies_path(sort: session[:sort], ratings: session[:ratings])
+        
+      elsif (session[:sort] && !params[:sort])
+        flash.keep
+        return redirect_to movies_path(sort: session[:sort], ratings: params[:ratings])
+      end
 
   end
 
