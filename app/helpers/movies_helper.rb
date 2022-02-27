@@ -6,17 +6,17 @@ module MoviesHelper
   
   
   
-  def selected_rating?(rating)
-    selected_ratings = session[:ratings]
-    if selected_ratings.nil?
+  def rating_selected(rating)
+    ratings_selected = session[:ratings]
+    if ratings_selected.nil?
       return true 
     end
-    selected_ratings.include? rating
+    ratings_selected.include? rating
   end
   
-  def hilite(column)
-    
-    if(session[:sort].to_s == column)
+  def style(column)
+    sort_selected = session[:sort].to_s
+    if(column == sort_selected)
       if column == 'title'
         return 'hilite'
       elsif column == 'release_date'

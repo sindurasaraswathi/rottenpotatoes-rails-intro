@@ -5,16 +5,16 @@
   Include:
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", 1, selected_rating?(rating), id: "ratings_#{rating}"
+    = check_box_tag "ratings[#{rating}]", 1, rating_selected(rating), id: "ratings_#{rating}"
   = submit_tag 'Refresh', :class => 'btn btn-primary', :id => 'ratings_submit'
   
 %table#movies.table.table-striped.col-md-12
   %thead
     %tr
-      %th{:class => hilite('title')}
+      %th{:class => style('title')}
         %a#title_header{:href => movies_path({:sort => 'title'})} Movie Title
       %th Rating
-      %th{:class => hilite('release_date')}
+      %th{:class => style('release_date')}
         %a#release_date_header{:href => movies_path({:sort => 'release_date'})} Release Date
       %th More Info
   %tbody
