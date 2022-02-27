@@ -10,10 +10,11 @@ class MoviesController < ApplicationController
   
       @all_ratings = Movie.uniq.pluck(:rating)
       @sorting = params[:sort]
+      @rate = params[:ratings]
       @given_ratings = @all_ratings 
       
-      if params[:ratings]
-        @given_ratings =  params[:ratings].keys 
+      if @rate
+        @given_ratings =  @rate.keys 
       end
       
       if !@sorting
@@ -26,23 +27,22 @@ class MoviesController < ApplicationController
       session[:sort] = params[:sort] 
      end
      
-     if params[:ratings]
-      session[:ratings] = params[:ratings]
+     if @rate
+      session[:ratings] = @rate
      end
       
-      if (session[:ratings])
+      if (session[:ratings] && !@rate)
         flash.keep
-        return redirect_to movies_path(ratings: session[:ratings], sort: params[:sort])
+        return redirect_to movies_path(ratings: session[:ratings], sort: @sorting)
         
-      elsif (!params[:sort] && !params[:ratings]) 
-        if (session[:sort] && session[:ratings])
+      elsif (!@sorting && session[:sort])
+        flash.keep
+        return redirect_to movies_path(sort: session[:sort], ratings: @rate)
+      
+      elsif (!@sorting&& !@rate) && (session[:sort] && session[:ratings]) 
         flash.keep
         return redirect_to movies_path(sort: session[:sort], ratings: session[:ratings])
-        end
         
-      elsif (session[:sort] && !params[:sort])
-        flash.keep
-        return redirect_to movies_path(sort: session[:sort], ratings: params[:ratings])
       end
 
   end
